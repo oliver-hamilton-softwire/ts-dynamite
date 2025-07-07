@@ -23,37 +23,13 @@ class Bot {
         if (gamestate.rounds.length > 0) {
             const lastMove = gamestate.rounds.at(-1);
             this.updateDrawCount(lastMove.p1, lastMove.p2);
-            // Randomise between playing dynamite and water in high-stakes situations
-            // const highStakesThreshold = Math.min(1, (2 * this.drawCount) / 10);
-            // console.log(highStakesThreshold);
-            // const highStakes = Math.random() < highStakesThreshold;
+            // Choose dynamite only in high-stakes situations
             const highStakes = this.drawCount >= 2;
-            if ((highStakes && this.dynamiteCounter-- > 0 && Math.random() < 0.5) || (Math.random() < 0.1 && this.dynamiteCounter > 0)) {
+            if (highStakes && this.dynamiteCounter-- > 0) {
                 return 'D';
             }
-            else if (highStakes) {
-                return 'W';
-            }
-            /* Randomise between:
-                - A random move
-                - The counter to the opponent's last move
-                - The counter to what the opponent would play if they're trying to counter my last move
-            */
-            if (Math.random() < this.RANDOM_PROB) {
-                // Choose a random move from the basic ones
-                const basicMoves: BotSelection[] = ['R', 'P', 'S'];
-                return basicMoves[Math.floor(Math.random() * basicMoves.length)];
-            }
-            else if (Math.random() < this.RANDOM_PROB + this.COUNTER_COUNTER_PROB) {
-                // Try to counter an intelligent opponent
-                const counterMove: BotSelection = this.counter(this.counter(gamestate.rounds.at(-1).p1));
-                return counterMove;
-            }
-            else {
-                // Try to counter an opponent who plays consistent moves by playing the counter to their previous move
-                const counterMove: BotSelection = this.counter(gamestate.rounds.at(-1).p2);
-                return counterMove;
-            }
+            const counterMove: BotSelection = this.counter(this.counter(gamestate.rounds.at(-1).p1));
+            return counterMove;
         }
         else {
             // Just return 'R' if there is no previous move
