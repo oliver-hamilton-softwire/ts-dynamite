@@ -10,9 +10,17 @@ class Bot {
         if (this.dynamiteCounter-- > 0 && Math.random() > this.DYNAMITE_PROB) {
             return 'D';
         }
-        const counterMove: BotSelection = this.counter(gamestate.rounds.at(-1).p2);
-        // Play the counter to the opponent's previous move
-        return counterMove;
+        // Only play the counter if there is a previous move
+        if (gamestate.rounds.length > 0) {
+            const counterMove: BotSelection = this.counter(gamestate.rounds.at(-1).p2);
+            // Play the counter to the opponent's previous move
+            return counterMove;
+        }
+        else {
+            // Just return 'R' if there is no previous move
+            return 'R';
+        }
+        
     }
 
     counter(lastMove: BotSelection): BotSelection {
