@@ -2,13 +2,7 @@ import { Gamestate, BotSelection } from '../models/gamestate';
 
 class Bot {
     dynamiteCounter: number = 100;
-    // Use dynamite unpredictably, with probability 1/2
-    // DYNAMITE_PROB: number = 0.5;
     drawCount: number = 0
-    // Play a random move with some probability
-    RANDOM_PROB: number = 1;
-    // Play the counter to what the opponent would play if they're trying to counter my last move
-    COUNTER_COUNTER_PROB: number = 1/3;
 
     updateDrawCount(p1Move: BotSelection, p2Move: BotSelection) {
         if (p1Move == p2Move) {
@@ -28,6 +22,7 @@ class Bot {
             if (highStakes && this.dynamiteCounter-- > 0) {
                 return 'D';
             }
+            // Try and anticipate a player trying to counter the last move
             const counterMove: BotSelection = this.counter(this.counter(gamestate.rounds.at(-1).p1));
             return counterMove;
         }
